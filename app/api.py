@@ -1,7 +1,9 @@
 import json
+
+from flask import render_template, request
+
 import qiskit
 from qiskit import QuantumCircuit, Aer, execute
-from flask import render_template
 
 from app import app
 
@@ -9,7 +11,7 @@ from app import app
 def version():
     return json.dumps(qiskit.__qiskit_version__, indent=4, sort_keys=True, default=str)
 
-@app.route("/api/test/simulator")
+@app.route("/api/simulate")
 def test_simulator():
     gate = request.args.get('gate')
     qc = QuantumCircuit(1, 1)
