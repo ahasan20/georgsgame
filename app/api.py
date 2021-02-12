@@ -1,6 +1,6 @@
 import json
 import qiskit
-from qiskit import QuantumCircuit, Aer, execture
+from qiskit import QuantumCircuit, Aer, execute
 from flask import render_template
 
 from app import app
