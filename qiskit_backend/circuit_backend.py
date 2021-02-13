@@ -44,7 +44,7 @@ def state_to_circuit(state):
     for gate in gates:
         if gate[0] in SINGLE_GATE_DICT.keys():
             qc.append(SINGLE_GATE_DICT[gate[0]], qargs=gate[1])
-        else:
+        elif gate[0] in CONTROLLED_GATE_DICT.keys():
             qc.append(CONTROLLED_GATE_DICT[gate[0]], qargs=gate[1])
     return qc
 
