@@ -46,7 +46,7 @@ const Canvas = props => {
     }
   }, [draw])
   //asdfasdf
-  return <canvas style={{"width":"80%", "height":"50%", "padding":"50px"}} ref={canvasRef} {...rest}/>
+  return <canvas className="canvas" style={{"width":"700px", "height":"400px", "padding":"50px"}} ref={canvasRef} {...rest}/>
 }
 
 export default Canvas

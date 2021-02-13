@@ -20,6 +20,9 @@ import {
   useFirestore
 } from "reactfire";
 
+
+var _ = require('lodash');
+
 let map = {"top":0, "bottom":1}
 let reverseMap = {0:"top", 1:"bottom"}
 
@@ -38,6 +41,12 @@ const gates = {
     'X': { 'name': 'X', 'style': {backgroundColor: "#feceab"} },
     'Y': { 'name': 'Y', 'style': {backgroundColor: "#ff847c" } },
     'Z': { 'name': 'Z', 'style': {backgroundColor: "#e84a5f" } },
+    'S': { 'name': 'S', 'style': {backgroundColor: "#ffcc00" } },
+    'S_dg': { 'name': 'S✝', 'style': {backgroundColor: "#ffcc00" } },
+    'S✝': { 'name': 'S✝', 'style': {backgroundColor: "#ffcc00" } },
+    'T': { 'name': 'T', 'style': {backgroundColor: "#00d9ff" } },
+    'T_dg': { 'name': 'T✝', 'style': {backgroundColor: "#00d9ff" } },
+    'T✝': { 'name': 'T✝', 'style': {backgroundColor: "#00d9ff" } },
     'CX0': { 'name': 'CX0', 'style': {backgroundColor: "#00a6ff" } },
     'CX1': { 'name': 'CX1', 'style': {backgroundColor: "#00a6ff" } },
     'CY0': { 'name': 'CY0', 'style': {backgroundColor: "#00a6ff" } },
@@ -48,6 +57,30 @@ const gates = {
     'CH1': { 'name': 'CH1', 'style': {backgroundColor: "#00a6ff" } },
     '_': { 'name': '', 'style': {backgroundColor: 'rgba(52, 52, 52, 0)' } },
 }
+
+
+const gate_distribution = {
+    'H': { 'name': 'H', 'style': {backgroundColor: '#99b898'} },
+    'H': { 'name': 'H', 'style': {backgroundColor: '#99b898'} },
+    'H': { 'name': 'H', 'style': {backgroundColor: '#99b898'} },
+    'X': { 'name': 'X', 'style': {backgroundColor: "#feceab"} },
+    'Y': { 'name': 'Y', 'style': {backgroundColor: "#ff847c" } },
+    'Z': { 'name': 'Z', 'style': {backgroundColor: "#e84a5f" } },
+    'S': { 'name': 'S', 'style': {backgroundColor: "#ffcc00" } },
+    'S_dg': { 'name': 'S✝', 'style': {backgroundColor: "#ffcc00" } },
+    'T': { 'name': 'T', 'style': {backgroundColor: "#00d9ff" } },
+    'T_dg': { 'name': 'T✝', 'style': {backgroundColor: "#00d9ff" } },
+    'CX0': { 'name': 'CX0', 'style': {backgroundColor: "#00a6ff" } },
+    'CX1': { 'name': 'CX1', 'style': {backgroundColor: "#00a6ff" } },
+    // 'CY0': { 'name': 'CY0', 'style': {backgroundColor: "#00a6ff" } },
+    // 'CY1': { 'name': 'CY1', 'style': {backgroundColor: "#00a6ff" } },
+    // 'CZ0': { 'name': 'CZ0', 'style': {backgroundColor: "#00a6ff" } },
+    // 'CZ1': { 'name': 'CZ1', 'style': {backgroundColor: "#00a6ff" } },
+    // 'CH0': { 'name': 'CH0', 'style': {backgroundColor: "#00a6ff" } },
+    // 'CH1': { 'name': 'CH1', 'style': {backgroundColor: "#00a6ff" } },
+}
+
+
 
 
 const Navigation = () => (
@@ -75,7 +108,7 @@ function QTopHands() {
   let second_row = data.game[1].split(',');
   let gameState = [first_row, second_row];
 
-  let game = <Game gameState={gameState} turn={data.turn} playerType="top"/>
+  let game = <Game gameState={gameState} turn={data.turn} playerType="top" probs={data.probs}/>
 
   return game;
 }
@@ -96,7 +129,7 @@ function QBotHands() {
   let second_row = data.game[1].split(',');
   let gameState = [first_row, second_row];
 
-  let game = <Game gameState={gameState} turn={data.turn} playerType="bottom"/>
+  let game = <Game gameState={gameState} turn={data.turn} playerType="bottom" probs={data.probs}/>
 
   return game;
 }
@@ -106,8 +139,20 @@ class GateCardDeck extends React.Component {
 
     constructor(props) {
         super(props);
+
+        let names = _.sampleSize(Object.keys(gate_distribution), 6);
+        // console.log("names");
+        // console.log(names);
+        // let hand = Array(5);
+        // for(let i=0; i<names.length;i++){
+        //   hand[i] = gates[names[i]]["name"];
+        // }
+        console.log("hand");
+        console.log(names);
+        // console.log(hand);
+
         this.state = {
-            cards: ['H', 'X', 'Y', 'Z', 'CX0'],
+            cards: names,
         };
     }
 
@@ -128,9 +173,12 @@ class GateCardDeck extends React.Component {
               <Row>
                 <Col className="deck">
                     <div style={{"color":"white", "padding":2, "marginBottom":5, "fontSize":25}}>Gate Cards</div>
+
+                    <div id="card-space" style={{"marginLeft":50}}>
                     <Row className="cards">
                     {cards}
                     </Row>
+                    </div>
                 </Col>
                 <Col className="deck">
                   <h1 style={{"color":"white"}}>Strategy cards coming soon</h1>
@@ -168,7 +216,8 @@ class Game extends React.Component {
       super(props)
       this.state = {
         // gates:[['X','CZ0','CH1','CY0','H'],['X', 'CZ0', 'CH1', 'CY0', 'H']],
-        gates: props.gameState
+        gates: props.gameState,
+        probs: props.probs,
       }
 
       this.handleCardUse = this.handleCardUse.bind(this);
@@ -189,11 +238,10 @@ class Game extends React.Component {
 
     resetGame(){
       const db=firebase.firestore();
-      db.collection('games').doc("game").set({turn:0, game:["_,_,_,_,_", "_,_,_,_,_"]});
+      db.collection('games').doc("game").set({turn:0, game:["_,_,_,_,_", "_,_,_,_,_"], probs:["100%", "0%","0%", "0%"]});
     }
 
     handleCardUse(card){
-
       if(this.props.playerType == reverseMap[this.props.turn % 2]){
         let gameState = this.state.gates
         // console.log(this.state.gates);
@@ -220,23 +268,61 @@ class Game extends React.Component {
         let newGameState = [first_row, second_row];
 
         const data = {
-          game_state: [gameState[0], gameState[1]]
+          "state": [gameState[0], gameState[1]]
         };
-        const URL = `https://jsonplaceholder.typicode.com/users`;
-        axios.post(URL, { data })
+
+        console.log("data");
+        console.log(data);
+
+        const probs = `https://georgsgame.herokuapp.com/api/get/probabilities`;
+        const statevector = `https://georgsgame.herokuapp.com/api/get/statevector`;
+
+        axios.post(probs, { data }, {headers: {
+          "Content-Type": "application/json",
+        }})
           .then(res => {
-            console.log(res);
-            console.log(res.data);
+            this.setState({probs:res.data})
+            const db=firebase.firestore();
+            db.collection('games').doc("game").set({turn:this.props.turn + 1, game:newGameState, probs:res.data }).then()
+
           })
 
-        const db=firebase.firestore();
-        db.collection('games').doc("game").set({turn:this.props.turn + 1, game:newGameState}).then()
+
+      }
+      else{
+        alert("Not your turn, wait for the other player.")
       }
 
-      console.log(this.props.turn)
       if(this.props.turn == 9){
         alert("Game over!");
-        this.resetGame();
+
+        let gameState = this.state.gates
+
+        let first_row = gameState[0].join(',');
+        let second_row = gameState[1].join(',');
+
+        let newGameState = [first_row, second_row];
+
+        const data = {
+          "state": [gameState[0], gameState[1]]
+        };
+
+        const measurement = `https://georgsgame.herokuapp.com/api/get/measurement`;
+
+        axios.post(measurement, { data }, {headers: {
+          "Content-Type": "application/json",
+        }})
+          .then(res => {
+            console.log("request successful!");
+            console.log(res.data);
+            if(parseInt(res.data[0]) - parseInt(res.data[1]) == 0){
+              alert("Constant measurement " + res.data + ". Top wins");
+            }
+            else{
+              alert("Balanced measurement  " + res.data + ". Bottom wins");
+            }
+            this.resetGame();
+          })
       }
     }
 
@@ -261,7 +347,7 @@ class Game extends React.Component {
           ctx.font = "30px Arial";
           ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
           ctx.fillStyle = "#000000";
-          let cable_width = 225
+          let cable_width = 225;
           let cable_heights = [30, 90]
           let starting_x = 20
           this.fillRect(ctx, starting_x, cable_heights[0], cable_width, 3)
@@ -318,6 +404,8 @@ class Game extends React.Component {
           }
         }
 
+        let yourTurn = this.props.playerType == reverseMap[this.props.turn % 2] ? "your turn" : "opponent's turn"
+
         return (
             <div>
                 <h1 className="game-title">Georg's Game: Circuit Showdown!</h1>
@@ -326,15 +414,29 @@ class Game extends React.Component {
                   <Col>
                   Probabilities
                   <Container className="probabilites-box">
-                    <Row>top:   <Latex> $ 0.707 | 0 \rangle $ + $0.707 | 1 \rangle$ </Latex></Row>
-                    <Row>bottom:  <Latex> $ 0.707 | 0 \rangle $ - $0.707 | 1 \rangle$</Latex></Row>
+                    <Row>
+                      <Col>
+                      <Latex> $ p(| 00 \rangle ) = $</Latex>{this.state.probs[0]}
+                      </Col>
+                      <Col>
+                      <Latex> $ p(| 01 \rangle ) = $</Latex>{this.state.probs[1]}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col>
+                      <Latex> $ p(| 10 \rangle ) = $</Latex>{this.state.probs[2]}
+                      </Col>
+                      <Col>
+                      <Latex> $ p(| 11 \rangle ) = $</Latex>{this.state.probs[3]}
+                      </Col>
+                    </Row>
                   </Container>
                   </Col>
                   <Col></Col>
                   <Col>
                   Turns
                   <Container className="turn-box">
-                    <Row>Turn {this.props.turn + 1} - {reverseMap[this.props.turn % 2]}</Row>
+                    <Row>Turn {this.props.turn + 1}/10 - {reverseMap[this.props.turn % 2]} ({yourTurn})</Row>
                   </Container>
                   </Col>
                 </Row>

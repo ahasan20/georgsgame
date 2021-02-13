@@ -19,6 +19,12 @@
     border: none;
     color: white;
     text-align:center;
+    width:100px !important;
+    margin-bottom:15px !important;
+}
+
+.canvas{
+  margin-left:35px;
 }
 
 .card:hover{
@@ -41,6 +47,7 @@ body{
   border-radius:3px;
   text-align:center;
   padding:5px 30px !important;
+  font-size:25px;
 }
 
 .turn-box{
@@ -48,6 +55,7 @@ body{
   color:white;
   border-radius:3px;
   padding:5px 30px !important;
+  font-size:25px;
 }
 
 
