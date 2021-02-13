@@ -1,5 +1,5 @@
 from qiskit.circuit.library import HGate, XGate, YGate, ZGate, CXGate, CYGate, CZGate, CHGate
-from qiskit.circuit.library import SwapGate, IGate, SGate, TGate, TdgGate, SdgGate
+from qiskit.circuit.library import SwapGate, IGate, SGate, TGate, TdgGate, SdgGate, RYGate
 from qiskit import QuantumCircuit, Aer, execute, QuantumRegister, ClassicalRegister
 import numpy as np
 
@@ -12,7 +12,8 @@ SINGLE_GATE_DICT = {
     'S' : SGate(),
     'T' : TGate(),
     'T_dg' : TdgGate(),
-    'S_dg' : SdgGate()
+    'S_dg' : SdgGate(),
+    'RY' : RYGate(np.pi / 4)
 }
 
 CONTROLLED_GATE_DICT = {
