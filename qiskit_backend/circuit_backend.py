@@ -1,4 +1,5 @@
-from qiskit.circuit.library import HGate, XGate, YGate, ZGate, CXGate, CYGate, CZGate, CHGate, SwapGate, IGate, SGate, TGate
+from qiskit.circuit.library import HGate, XGate, YGate, ZGate, CXGate, CYGate, CZGate, CHGate
+from qiskit.circuit.library import SwapGate, IGate, SGate, TGate, TdgGate, SdgGate
 from qiskit import QuantumCircuit, Aer, execute, QuantumRegister, ClassicalRegister
 import numpy as np
 
@@ -9,7 +10,9 @@ SINGLE_GATE_DICT = {
     'Y' : YGate(),
     'Z' : ZGate(),
     'S' : SGate(),
-    'T' : TGate()
+    'T' : TGate(),
+    'T_dg' : TdgGate(),
+    'S_dg' : SdgGate()
 }
 
 CONTROLLED_GATE_DICT = {
@@ -62,3 +65,6 @@ def get_measurement(qc):
     result = execute(qc, Aer.get_backend('qasm_simulator'), shots=1)
     counts = result.result().get_counts(qc)
     return next(iter(counts.keys()))
+
+qc = QuantumCircuit(2)
+print(type(get_probabilities(qc)[0]))
