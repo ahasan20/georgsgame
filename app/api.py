@@ -14,16 +14,16 @@ def version():
 
 @app.route("/api/get/probabilities")
 def get_probabilities_api():
-    print(request.get_json())
-    return json.dumps(get_probabilities(state_to_circuit(request.get_json()['state'])), indent=4, sort_keys=True, default=str)
+    print(request.json)
+    return json.dumps(get_probabilities(state_to_circuit(request.json.get('state'))), indent=4, sort_keys=True, default=str)
 
 @app.route("/api/get/measurement")
 def get_measurement_api():
-    return json.dumps(get_measurement(state_to_circuit(request.get_json()['state'])), indent=4, sort_keys=True, default=str)
+    return json.dumps(get_measurement(state_to_circuit(request.json.get('state'))), indent=4, sort_keys=True, default=str)
 
 @app.route("/api/get/statevector")
 def get_statevector_api():
-    return json.dumps(get_statevector(state_to_circuit(request.get_json()['state'])), indent=4, sort_keys=True, default=str)
+    return json.dumps(get_statevector(state_to_circuit(request.json.get('state'))), indent=4, sort_keys=True, default=str)
 
 @app.route('/')
 def index():
