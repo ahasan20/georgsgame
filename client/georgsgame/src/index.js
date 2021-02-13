@@ -11,6 +11,12 @@ const gates = {
     'Z': { 'name': 'Z', 'style': {backgroundColor: "#e84a5f" } },
     'CX0': { 'name': 'CX0', 'style': {backgroundColor: "#00a6ff" } },
     'CX1': { 'name': 'CX1', 'style': {backgroundColor: "#00a6ff" } },
+    'CY0': { 'name': 'CY0', 'style': {backgroundColor: "#00a6ff" } },
+    'CY1': { 'name': 'CY1', 'style': {backgroundColor: "#00a6ff" } },
+    'CZ0': { 'name': 'CZ0', 'style': {backgroundColor: "#00a6ff" } },
+    'CZ1': { 'name': 'CZ1', 'style': {backgroundColor: "#00a6ff" } },
+    'CH0': { 'name': 'CH0', 'style': {backgroundColor: "#00a6ff" } },
+    'CH1': { 'name': 'CH1', 'style': {backgroundColor: "#00a6ff" } }
 }
 
 
@@ -57,7 +63,7 @@ class Game extends React.Component {
     constructor(props){
       super(props)
       this.state = {
-        gates:[['X','CX0','CX1','X','X'],['X', 'CX0', 'CX1', 'X', 'H']],
+        gates:[['X','CZ0','CH1','CY0','H'],['X', 'CZ0', 'CH1', 'CY0', 'H']],
       }
     }
 
