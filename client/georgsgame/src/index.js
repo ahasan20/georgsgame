@@ -365,8 +365,8 @@ class Game extends React.Component {
           let cable_width = 500;
           let cable_heights = [30, 90]
           let starting_x = 20
-          this.fillRect(ctx, starting_x, cable_heights[0], cable_width, 3)
-          this.fillRect(ctx, starting_x, cable_heights[1], cable_width, 3)
+          this.fillRect(ctx, starting_x, cable_heights[0], cable_width, 2)
+          this.fillRect(ctx, starting_x, cable_heights[1], cable_width, 2)
 
           const box_size = 50
 
@@ -427,7 +427,7 @@ class Game extends React.Component {
 
         return (
             <div>
-                <h1 className="game-title">Georg's Game: Circuit Showdown!</h1>
+                <div className="game-title">Georg's Game: Circuit Showdown!</div>
                 <Container>
                 <Row>
                   <Col>
