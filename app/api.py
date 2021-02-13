@@ -1,6 +1,6 @@
 import json
 
-from flask import render_template, request
+from flask import request
 
 import qiskit
 from qiskit import QuantumCircuit, Aer, execute
@@ -24,7 +24,3 @@ def get_measurement_api():
 @app.route("/api/get/statevector", methods=['GET', 'POST'])
 def get_statevector_api():
     return json.dumps(get_statevector(state_to_circuit(request.json['data']['state'])), indent=4, sort_keys=True, default=str)
-
-@app.route('/')
-def index():
-    return render_template('index.html')
