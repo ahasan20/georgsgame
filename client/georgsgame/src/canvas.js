@@ -11,15 +11,28 @@ const Canvas = props => {
     let animationFrameId
 
     const { width, height } = canvas.getBoundingClientRect()
-    console.log(width)
+    // console.log(width)
 
-     if (canvas.width !== width || canvas.height !== height) {
-       const { devicePixelRatio:ratio=1 } = window
-       const context = canvas.getContext('2d')
-       canvas.width = width*ratio
-       canvas.height = height*ratio
-       context.scale(ratio, ratio)
-     }
+    // if(!rescaled){
+
+    if(canvas.width){
+      let ratio=5
+      if(canvas.width < width){
+        canvas.width = canvas.width*ratio
+        canvas.height = canvas.height*ratio
+        context.scale(ratio, ratio)
+      }
+    }
+    // }
+     // if (canvas.width !== width || canvas.height !== height) {
+     //   const { devicePixelRatio:ratio=1 } = window
+     //   const context = canvas.getContext('2d')
+     //   canvas.width = width*ratio
+     //   canvas.height = height*ratio
+     //   console.log("resetting")
+     //   context.setTransform(1, 0, 0, 1, 0, 0);
+     //   context.scale(ratio, ratio)
+     // }
 
     const render = () => {
       frameCount++
@@ -32,7 +45,8 @@ const Canvas = props => {
       window.cancelAnimationFrame(animationFrameId)
     }
   }, [draw])
-  return <canvas style={{"width":"100%", "height":"50%"}} ref={canvasRef} {...rest}/>
+  //asdfasdf
+  return <canvas style={{"width":"80%", "height":"50%", "padding":"50px"}} ref={canvasRef} {...rest}/>
 }
 
 export default Canvas

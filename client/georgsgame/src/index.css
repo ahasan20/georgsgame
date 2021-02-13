@@ -1,9 +1,12 @@
 .deck {
     background-color: #303030;
     width: 50vw;
-    display: flex;
     padding: 20px;
     border-radius: 5px;
+}
+
+.cards{
+  display: flex;
 }
 
 .card {
@@ -16,4 +19,35 @@
     font-size: 45px;
     border: none;
     color: white;
+}
+
+body{
+  font-family: "Arial";
+}
+
+.game-title {
+  /* font-family: "Arial"; */
+  padding:10px;
+  text-align:center;
+}
+
+.probabilites-box{
+  background-color:#303030;
+  color:white;
+  border-radius:3px;
+  text-align:center;
+  padding:5px 30px !important;
+}
+
+.turn-box{
+  background-color:#303030;
+  color:white;
+  border-radius:3px;
+  padding:5px 30px !important;
+}
+
+
+.sub-title{
+  display:inline-block;
+  width:100%;
 }
