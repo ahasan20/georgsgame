@@ -13,7 +13,7 @@ SINGLE_GATE_DICT = {
     'T' : TGate(),
     'T_dg' : TdgGate(),
     'S_dg' : SdgGate(),
-    'RY' : RYGate(np.pi / 4)
+    'Ry' : RYGate(np.pi / 4)
 }
 
 CONTROLLED_GATE_DICT = {
@@ -67,6 +67,3 @@ def get_measurement(qc):
     result = execute(qc, Aer.get_backend('qasm_simulator'), shots=1)
     counts = result.result().get_counts(qc)
     return next(iter(counts.keys()))
-
-qc = QuantumCircuit(2)
-print(type(get_probabilities(qc)[0]))
