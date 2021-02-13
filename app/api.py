@@ -4,6 +4,7 @@ from flask import render_template, request
 
 import qiskit
 from qiskit import QuantumCircuit, Aer, execute
+from qiskit_backend.circuit_backend import state_to_circuit, get_probabilities, get_statevector, get_measurement
 
 from app import app
 
@@ -11,13 +12,17 @@ from app import app
 def version():
     return json.dumps(qiskit.__qiskit_version__, indent=4, sort_keys=True, default=str)
 
-@app.route("/api/simulate")
-def test_simulator():
-    gate = request.args.get('gate')
-    qc = QuantumCircuit(1, 1)
-    if gate == 'X': qc.x(0)
-    qc.measure(0, 0)
-    return json.dumps(execute(qc, Aer.get_backend('qasm_simulator')).result().get_counts(), indent=4, sort_keys=True, default=str)
+@app.route("/api/get/probabilities")
+def get_probabilities_api():
+    return json.dumps(get_probabilities(state_to_circuit(request.get_json()['state'])), indent=4, sort_keys=True, default=str)
+
+@app.route("/api/get/measurement")
+def get_measurement_api():
+    return json.dumps(get_measurement(state_to_circuit(request.get_json()['state'])), indent=4, sort_keys=True, default=str)
+
+@app.route("/api/get/statevector")
+def get_statevector_api():
+    return json.dumps(get_statevector(state_to_circuit(request.get_json()['state'])), indent=4, sort_keys=True, default=str)
 
 @app.route('/')
 def index():
