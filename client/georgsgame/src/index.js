@@ -26,7 +26,7 @@ class GateCardDeck extends React.Component {
     renderGateCard(type) {
         const gate = gates[type];
         return (
-        <GateCard name={gate['name']} style={gate['style']} handleCardUse={()=>{this.props.handleCardUse()}}/>
+        <GateCard name={gate['name']} style={gate['style']} handleCardUse={this.props.handleCardUse}/>
         );
     }
 
@@ -46,20 +46,11 @@ class GateCardDeck extends React.Component {
 function GateCard(props) {
     // console.log(props.gateType);
     return (
-        <button className="card" style={props.style} onClick={()=>{props.handleCardUse()}}>
+        <button className="card" style={props.style} onClick={()=>{props.handleCardUse(props.name)}}>
             {props.name}
         </button>
     )
 }
-
-// class StratCardDeck extends React.Component {
-//     render() {
-//         return (
-//             <div className="deck"> Coming Soon -- Apler
-//             </div>
-//         );
-//     }
-// }
 
 class Game extends React.Component {
 
@@ -70,8 +61,9 @@ class Game extends React.Component {
       }
     }
 
-    handleCardUse(){
-      console.log(this.state.test_color);
+    handleCardUse(card){
+      console.log("clicked on a card");
+      console.log(card);
     }
 
     fillRect(ctx, x,y,width,height){
@@ -138,13 +130,9 @@ class Game extends React.Component {
                   this.fillRectCenter(ctx, x+box_size, y, 2, cable_heights[1] - cable_heights[0])
                   //actual rectangle
                   this.fillRectCenter(ctx, x+box_size, y, controlled_radii[order[i]], controlled_radii[order[i]])
-
-
                 }
                 else{
                   this.fillRectCenter(ctx, x+box_size , y, controlled_radii[order[i]], controlled_radii[order[i]])
-
-
                 }
 
                 if(order[i]){
@@ -156,18 +144,12 @@ class Game extends React.Component {
               }
             }
           }
-
-          // ctx.fillStyle = this.state.test_color ? '#000000' : '#FFFFFF'
-          // console.log(ctx.fillStyle);
-          // ctx.beginPath()
-          // ctx.arc(50, 100, 20*Math.sin(frameCount*0.05)**2, 0, 2*Math.PI)
-          // ctx.fill()
         }
 
         return (
             <div style={{display: 'inline-block'}}>
                 <Canvas draw={draw}/>
-                <GateCardDeck handleCardUse={() => {this.handleCardUse()}}/>
+                <GateCardDeck handleCardUse={this.handleCardUse}/>
                 {/* <StratCardDeck/> */}
             </div>
         )
