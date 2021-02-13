@@ -6,7 +6,7 @@ import { render } from "react-dom";
 import { BrowserRouter, NavLink, Switch, Route } from 'react-router-dom';
 import Latex from 'react-latex'
 
-import { Row, Col, Container} from 'react-bootstrap';
+import { Row, Col, Container, Button} from 'react-bootstrap';
 import axios from 'axios';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -19,6 +19,9 @@ import {
   useFirestoreDocData,
   useFirestore
 } from "reactfire";
+
+let map = {"top":0, "bottom":1}
+let reverseMap = {0:"top", 1:"bottom"}
 
 const firebaseConfig = {
   apiKey: "AIzaSyDtKtCjmDGio_3jsEqsI0cIleqndvD4pJg",
@@ -169,7 +172,6 @@ class Game extends React.Component {
       }
 
       this.handleCardUse = this.handleCardUse.bind(this);
-
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -185,46 +187,57 @@ class Game extends React.Component {
       }
     }
 
+    resetGame(){
+      const db=firebase.firestore();
+      db.collection('games').doc("game").set({turn:0, game:["_,_,_,_,_", "_,_,_,_,_"]});
+    }
+
     handleCardUse(card){
-      let gameState = this.state.gates
-      // console.log(this.state.gates);
-      console.log(gameState);
-      console.log()
 
-      let map = {"top":0, "bottom":1}
-      let qubitState = gameState[map[this.props.playerType]]
+      if(this.props.playerType == reverseMap[this.props.turn % 2]){
+        let gameState = this.state.gates
+        // console.log(this.state.gates);
+        console.log(gameState);
+        console.log()
 
-      for(let i = 0; i < qubitState.length; i++){
-        console.log(">>>")
-        console.log(i)
-        console.log(qubitState[i]);
-        console.log(">>>")
+        let qubitState = gameState[map[this.props.playerType]]
 
-        if(qubitState[i]=="_"){
-          qubitState[i]=card;
-          break
+        for(let i = 0; i < qubitState.length; i++){
+          console.log(">>>")
+          console.log(i)
+          console.log(qubitState[i]);
+          console.log(">>>")
+
+          if(qubitState[i]=="_"){
+            qubitState[i]=card;
+            break
+          }
         }
+
+        let first_row = gameState[0].join(',');
+        let second_row = gameState[1].join(',');
+
+        let newGameState = [first_row, second_row];
+
+        const data = {
+          game_state: [gameState[0], gameState[1]]
+        };
+        const URL = `https://jsonplaceholder.typicode.com/users`;
+        axios.post(URL, { data })
+          .then(res => {
+            console.log(res);
+            console.log(res.data);
+          })
+
+        const db=firebase.firestore();
+        db.collection('games').doc("game").set({turn:this.props.turn + 1, game:newGameState}).then()
       }
 
-      let first_row = gameState[0].join(',');
-      let second_row = gameState[1].join(',');
-
-      let newGameState = [first_row, second_row];
-
-      const data = {
-        game_state: [gameState[0], gameState[1]]
-      };
-      const URL = `https://jsonplaceholder.typicode.com/users`;
-      axios.post(URL, { data })
-        .then(res => {
-          console.log(res);
-          console.log(res.data);
-        })
-
-      const db=firebase.firestore();
-      db.collection('games').doc("game").set({game:newGameState})
-
-      console.log(card);
+      console.log(this.props.turn)
+      if(this.props.turn == 9){
+        alert("Game over!");
+        this.resetGame();
+      }
     }
 
     fillRect(ctx, x,y,width,height){
@@ -321,7 +334,7 @@ class Game extends React.Component {
                   <Col>
                   Turns
                   <Container className="turn-box">
-                    <Row>Turn 3/4</Row>
+                    <Row>Turn {this.props.turn + 1} - {reverseMap[this.props.turn % 2]}</Row>
                   </Container>
                   </Col>
                 </Row>
@@ -329,6 +342,7 @@ class Game extends React.Component {
 
                 <Canvas draw={draw}/>
                 <GateCardDeck handleCardUse={this.handleCardUse}/>
+                <Button onClick={()=>{this.resetGame()}}></Button>
             </div>
         )
     }
