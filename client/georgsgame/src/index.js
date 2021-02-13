@@ -15,6 +15,17 @@ const Canvas = props => {
     let frameCount = 0
     let animationFrameId
 
+    const { width, height } = canvas.getBoundingClientRect()
+    console.log(width)
+
+     if (canvas.width !== width || canvas.height !== height) {
+       const { devicePixelRatio:ratio=1 } = window
+       const context = canvas.getContext('2d')
+       canvas.width = width*ratio
+       canvas.height = height*ratio
+       context.scale(ratio, ratio)
+     }
+
     const render = () => {
       frameCount++
       draw(context, frameCount)
@@ -28,7 +39,7 @@ const Canvas = props => {
   }, [draw])
 
 
-  return <canvas ref={canvasRef} {...rest}/>
+  return <canvas style={{"width":"100%", "height":"50%"}} ref={canvasRef} {...rest}/>
 }
 
 
@@ -109,7 +120,8 @@ class Game extends React.Component {
           ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
           ctx.fillStyle = "#000000";
           ctx.rect(20, 20, 150, 1);
-          ctx.rect(20, 40, 150, 1);
+          ctx.rect(40, 20, 150, 1);
+
           ctx.stroke()
           // ctx.fillStyle = this.state.test_color ? '#000000' : '#FFFFFF'
           // console.log(ctx.fillStyle);
