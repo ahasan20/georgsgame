@@ -57,6 +57,7 @@ const gates = {
     // 'CH0': { 'name': 'CH0', 'style': {backgroundColor: "#00a6ff" } },
     // 'CH1': { 'name': 'CH1', 'style': {backgroundColor: "#00a6ff" } },
     '_': { 'name': '', 'style': {backgroundColor: 'rgba(52, 52, 52, 0)' } },
+    '*': { 'name': '', 'style': {backgroundColor: 'rgba(52, 52, 52, 0)' } },
 }
 
 
@@ -174,7 +175,7 @@ class GateCardDeck extends React.Component {
             <Container>
               <Row>
                 <Col className="deck">
-                    <div style={{"color":"white", "padding":2, "marginBottom":5, "fontSize":25}}>Gate Cards</div>
+                    <div style={{"color":"white", "padding":2, "marginBottom":"25px", "fontSize":"2.5rem"}}>Gate Cards</div>
 
                     <div id="card-space" style={{"marginLeft":50}}>
                     <Row className="cards">
@@ -182,9 +183,9 @@ class GateCardDeck extends React.Component {
                     </Row>
                     </div>
                 </Col>
-                <Col className="deck">
+                {/* <Col className="deck">
                   <h1 style={{"color":"white"}}>Strategy cards coming soon</h1>
-                </Col>
+                </Col> */}
 
               </Row>
             </Container>
@@ -266,6 +267,7 @@ class Game extends React.Component {
               for(let j=0;j<2;j++){
                 gameState[j][i]=card
               }
+              console.log(gameState);
             }
             break
           }
@@ -360,7 +362,7 @@ class Game extends React.Component {
           ctx.font = "30px Arial";
           ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
           ctx.fillStyle = "#000000";
-          let cable_width = 225;
+          let cable_width = 500;
           let cable_heights = [30, 90]
           let starting_x = 20
           this.fillRect(ctx, starting_x, cable_heights[0], cable_width, 3)
@@ -376,7 +378,7 @@ class Game extends React.Component {
             let y = cable_heights[i]
             for(let j=0; j<this.state.gates[0].length; j++){
 
-              let x = j*(cable_width/(this.state.gates[0].length-1)) - starting_x
+              let x = j*(cable_width/(this.state.gates[0].length-1))*0.6 - starting_x
               let type = gates[this.state.gates[i][j]];
               // console.log("type");
               // console.log(type);

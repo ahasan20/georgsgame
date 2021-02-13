@@ -18,7 +18,7 @@ const Canvas = props => {
     if(canvas.width){
       let ratio=5
       if(canvas.width < width){
-        canvas.width = canvas.width*ratio
+        canvas.width = canvas.width*ratio*1.75
         canvas.height = canvas.height*ratio
         context.scale(ratio, ratio)
       }
@@ -46,7 +46,7 @@ const Canvas = props => {
     }
   }, [draw])
   //asdfasdf
-  return <canvas className="canvas" style={{"width":"700px", "height":"400px", "padding":"50px"}} ref={canvasRef} {...rest}/>
+  return <canvas className="canvas" style={{"width":"1150px", "height":"450px", "padding":"100px 50px 50px 50px",}} ref={canvasRef} {...rest}/>
 }
 
 export default Canvas

@@ -24,7 +24,9 @@
 }
 
 .canvas{
-  margin-left:35px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .card:hover{
