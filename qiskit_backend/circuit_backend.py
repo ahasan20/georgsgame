@@ -24,6 +24,8 @@ def _state_to_gates(state):
         elif qtop_gate[0] == 'C':
             gates.append([qtop_gate[:2], [0, 1] if qtop_gate[-1] == '0' else [1, 0] ])
 
+    print(gates)
+
     return gates
 
 def state_to_circuit(state):
