@@ -7,10 +7,11 @@ import { BrowserRouter, NavLink, Switch, Route } from 'react-router-dom';
 import Latex from 'react-latex'
 
 import { Row, Col, Container} from 'react-bootstrap';
+import axios from 'axios';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-
+import firebase from "firebase"
 
 import "firebase/firestore";
 import {
@@ -57,9 +58,7 @@ const Navigation = () => (
 
 function QTopHands() {
   // easily access the Firestore library
-  const gameRef = useFirestore()
-    .collection("games")
-    .doc("game");
+  const gameRef = useFirestore().collection("games").doc("game");
 
   // subscribe to a document for realtime updates. just one line!
   const { status, data } = useFirestoreDocData(gameRef);
@@ -69,8 +68,8 @@ function QTopHands() {
     return <p>Fetching Data...</p>;
   }
 
-  let first_row = data.game_state[0].split(',');
-  let second_row = data.game_state[1].split(',');
+  let first_row = data.game[0].split(',');
+  let second_row = data.game[1].split(',');
   let gameState = [first_row, second_row];
 
   let game = <Game gameState={gameState} turn={data.turn} playerType="top"/>
@@ -80,9 +79,7 @@ function QTopHands() {
 
 function QBotHands() {
   // easily access the Firestore library
-  const gameRef = useFirestore()
-    .collection("games")
-    .doc("game");
+  const gameRef = useFirestore().collection("games").doc("game");
 
   // subscribe to a document for realtime updates. just one line!
   const { status, data } = useFirestoreDocData(gameRef);
@@ -92,11 +89,13 @@ function QBotHands() {
     return <p>Fetching Data...</p>;
   }
 
-  let first_row = data.game_state[0].split(',');
-  let second_row = data.game_state[1].split(',');
+  let first_row = data.game[0].split(',');
+  let second_row = data.game[1].split(',');
   let gameState = [first_row, second_row];
 
   let game = <Game gameState={gameState} turn={data.turn} playerType="bottom"/>
+
+  return game;
 }
 
 
@@ -125,7 +124,7 @@ class GateCardDeck extends React.Component {
             <Container>
               <Row>
                 <Col className="deck">
-                    <div style={{"color":"white", "padding":2, "margin-bottom":5, "font-size":25}}>Gate Cards</div>
+                    <div style={{"color":"white", "padding":2, "marginBottom":5, "fontSize":25}}>Gate Cards</div>
                     <Row className="cards">
                     {cards}
                     </Row>
@@ -168,6 +167,9 @@ class Game extends React.Component {
         // gates:[['X','CZ0','CH1','CY0','H'],['X', 'CZ0', 'CH1', 'CY0', 'H']],
         gates: props.gameState
       }
+
+      this.handleCardUse = this.handleCardUse.bind(this);
+
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -176,10 +178,6 @@ class Game extends React.Component {
       // console.log(this.props.gates)
       // this.setState({})
       // console.log("new_gates", this.props.gates);
-      console.log(">>>");
-      console.table(prevState.gates);
-      console.table(this.props.gameState)
-      console.log(">>>");
       //
       if(prevState.gates !== this.props.gameState) {
         this.setState({gates: this.props.gameState})
@@ -188,6 +186,44 @@ class Game extends React.Component {
     }
 
     handleCardUse(card){
+      let gameState = this.state.gates
+      // console.log(this.state.gates);
+      console.log(gameState);
+      console.log()
+
+      let map = {"top":0, "bottom":1}
+      let qubitState = gameState[map[this.props.playerType]]
+
+      for(let i = 0; i < qubitState.length; i++){
+        console.log(">>>")
+        console.log(i)
+        console.log(qubitState[i]);
+        console.log(">>>")
+
+        if(qubitState[i]=="_"){
+          qubitState[i]=card;
+          break
+        }
+      }
+
+      let first_row = gameState[0].join(',');
+      let second_row = gameState[1].join(',');
+
+      let newGameState = [first_row, second_row];
+
+      const data = {
+        game_state: [gameState[0], gameState[1]]
+      };
+      const URL = `https://jsonplaceholder.typicode.com/users`;
+      axios.post(URL, { data })
+        .then(res => {
+          console.log(res);
+          console.log(res.data);
+        })
+
+      const db=firebase.firestore();
+      db.collection('games').doc("game").set({game:newGameState})
+
       console.log(card);
     }
 
