@@ -47,7 +47,7 @@ def state_to_circuit(state):
     for gate in gates:
         if gate[0] in SINGLE_GATE_DICT.keys():
             qc.append(SINGLE_GATE_DICT[gate[0]], qargs=gate[1])
-        else:
+        elif gate[0] in CONTROLLED_GATE_DICT.keys():
             qc.append(CONTROLLED_GATE_DICT[gate[0]], qargs=gate[1])
     return qc
 
@@ -58,7 +58,8 @@ def get_statevector(qc):
     return list(_get_statevector_np_array)
 
 def get_probabilities(qc):
-    return np.square([ np.absolute(c) for c in _get_statevector_np_array(qc)])
+    probabilities = np.square([ np.absolute(c) for c in _get_statevector_np_array(qc)])
+    return [ "{:.2%}".format(p) for p in probabilities ]
 
 def get_measurement(qc):
     qc.measure([0, 1], [0, 1])
