@@ -67,12 +67,10 @@ class Game extends React.Component {
       super(props)
       this.state = {
         gates:[['X','CX0','CX1','X','X'],['X', 'CX0', 'CX1', 'X', 'H']],
-        'test_color':null
       }
     }
 
     handleCardUse(){
-      this.setState({'test_color':1});
       console.log(this.state.test_color);
     }
 
