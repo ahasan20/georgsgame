@@ -31,7 +31,7 @@ def get_probabilities(qc):
     p = []
     for c in statevector:
         p.append(np.absolute(c))
-    return p
+    return np.square(p)
 
 def measure(qc):
     qc.measure([0, 1], [0, 1])
@@ -40,3 +40,9 @@ def measure(qc):
     counts = result.result().get_counts(qc)
     for k in counts.keys():
         return k
+
+gates = [['H', [0]], ['X', [1]], ['CX', [0, 1]], ['CH', [1, 0]]]
+qc = list_to_circuit(gates)
+print(get_statevector(qc))
+print(get_probabilities(qc))
+print(measure(qc))
