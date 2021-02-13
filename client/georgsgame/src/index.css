@@ -1,19 +1,57 @@
 .deck {
     background-color: #303030;
     width: 50vw;
-    display: flex;
     padding: 20px;
     border-radius: 5px;
+    margin:10px;
+}
+
+.cards{
+  display: flex;
 }
 
 .card {
-    float: left;
     background-color: white;
-    margin-right: 15px;
-    padding: 5px;
+    /* padding: 5px; */
+    margin:0px 10px !important;
     height: 15vh;
-    width: 6vw;
-    font-size: 45px;
+    font-size: 35px;
     border: none;
     color: white;
+    text-align:center;
+}
+
+.card:hover{
+  cursor: pointer;
+}
+
+body{
+  font-family: "Arial";
+}
+
+.game-title {
+  /* font-family: "Arial"; */
+  padding:10px;
+  text-align:center;
+}
+
+.probabilites-box{
+  background-color:#303030;
+  color:white;
+  border-radius:3px;
+  text-align:center;
+  padding:5px 30px !important;
+}
+
+.turn-box{
+  background-color:#303030;
+  color:white;
+  border-radius:3px;
+  padding:5px 30px !important;
+}
+
+
+.sub-title{
+  display:inline-block;
+  width:100%;
 }
