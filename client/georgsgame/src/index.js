@@ -2,42 +2,38 @@ import React, { useRef, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
+
 const Canvas = props => {
-  
-    const canvasRef = useRef(null);
-    
-    const draw = (ctx, frameCount) => {
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-        ctx.fillStyle = '#000000'
-        ctx.beginPath()
-        ctx.arc(50, 100, 20*Math.sin(frameCount*0.05)**2, 0, 2*Math.PI)
-        ctx.fill()
+
+  const { draw, ...rest } = props
+  const canvasRef = useRef(null)
+
+  useEffect(() => {
+
+    const canvas = canvasRef.current
+    const context = canvas.getContext('2d')
+    let frameCount = 0
+    let animationFrameId
+
+    const render = () => {
+      frameCount++
+      draw(context, frameCount)
+      animationFrameId = window.requestAnimationFrame(render)
     }
-      
-    useEffect(() => {
-    
-        const canvas = canvasRef.current
-        const context = canvas.getContext('2d')
-        let frameCount = 0
-        let animationFrameId
-    
-        const render = () => {
-            frameCount++
-            draw(context, frameCount)
-            animationFrameId = window.requestAnimationFrame(render)
-        }
-        render()
-    
-        return () => {
-            window.cancelAnimationFrame(animationFrameId)
-        }
-    }, [draw])
-    
-    return <canvas ref={canvasRef} {...props}/>
-  }
-  
+    render()
+
+    return () => {
+      window.cancelAnimationFrame(animationFrameId)
+    }
+  }, [draw])
+
+
+  return <canvas ref={canvasRef} {...rest}/>
+}
+
 
 class GateCardDeck extends React.Component {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -57,14 +53,14 @@ class GateCardDeck extends React.Component {
         const gate = gates[type];
 
         return (
-        <GateCard name={gate['name']} style={gate['style']} />
+        <GateCard name={gate['name']} style={gate['style']} handleCardUse={()=>{this.props.handleCardUse()}}/>
         );
     }
 
     render() {
         const cards = Array(5).fill(null);
         for(let i = 0; i < this.state.cards.length; i++) {
-            cards.push(<div>{this.renderGateCard(this.state.cards[i])}</div>);
+            cards.push(<div key={i}>{this.renderGateCard(this.state.cards[i])}</div>);
         }
 
         return (
@@ -78,7 +74,7 @@ class GateCardDeck extends React.Component {
 function GateCard(props) {
     // console.log(props.gateType);
     return (
-        <button className="card" style={props.style}>
+        <button className="card" style={props.style} onClick={()=>{props.handleCardUse()}}>
             {props.name}
         </button>
     )
@@ -94,11 +90,38 @@ function GateCard(props) {
 // }
 
 class Game extends React.Component {
+
+    constructor(props){
+      super(props)
+      this.state = {
+        'gates':'X',
+        'test_color':null
+      }
+    }
+
+    handleCardUse(){
+      this.setState({'test_color':1});
+      console.log(this.state.test_color);
+    }
+
     render() {
+        let draw = (ctx, frameCount) => {
+          ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+          ctx.fillStyle = "#000000";
+          ctx.rect(20, 20, 150, 1);
+          ctx.rect(20, 40, 150, 1);
+          ctx.stroke()
+          // ctx.fillStyle = this.state.test_color ? '#000000' : '#FFFFFF'
+          // console.log(ctx.fillStyle);
+          // ctx.beginPath()
+          // ctx.arc(50, 100, 20*Math.sin(frameCount*0.05)**2, 0, 2*Math.PI)
+          // ctx.fill()
+        }
+
         return (
             <div style={{display: 'inline-block'}}>
-                <Canvas/>
-                <GateCardDeck/>
+                <Canvas draw={draw}/>
+                <GateCardDeck handleCardUse={() => {this.handleCardUse()}}/>
                 {/* <StratCardDeck/> */}
             </div>
         )
