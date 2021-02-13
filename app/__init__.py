@@ -10,4 +10,4 @@ app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 CORS(app)
 Bootstrap(app)
 
-from app import api
+from app import api, routes
