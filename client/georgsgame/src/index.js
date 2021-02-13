@@ -105,7 +105,7 @@ class GateCardDeck extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            cards: ['H', 'X', 'Y', 'Z'],
+            cards: ['H', 'X', 'Y', 'Z', 'CX0'],
         };
     }
 
@@ -122,12 +122,21 @@ class GateCardDeck extends React.Component {
             cards.push(<div key={i}>{this.renderGateCard(this.state.cards[i])}</div>);
         }
         return (
-            <div className="deck">
-                <div style={{"color":"white", "padding":5, "margin-bottom":5}}>Gate Cards</div>
-                <div className="cards">
-                {cards}
-                </div>
-            </div>
+            <Container>
+              <Row>
+                <Col className="deck">
+                    <div style={{"color":"white", "padding":2, "margin-bottom":5, "font-size":25}}>Gate Cards</div>
+                    <Row className="cards">
+                    {cards}
+                    </Row>
+                </Col>
+                <Col className="deck">
+                  <h1 style={{"color":"white"}}>Strategy cards coming soon</h1>
+                </Col>
+
+              </Row>
+            </Container>
+
         );
     }
 }
@@ -135,9 +144,11 @@ class GateCardDeck extends React.Component {
 function GateCard(props) {
     // console.log(props.gateType);
     return (
-        <button className="card" style={props.style} onClick={()=>{props.handleCardUse(props.name)}}>
+      // <Col>
+        <Col className="card" style={props.style} onClick={()=>{props.handleCardUse(props.name)}}>
             {props.name}
-        </button>
+        </Col>
+      // </Col>
     )
 }
 
