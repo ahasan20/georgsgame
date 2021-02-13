@@ -55,7 +55,7 @@ def get_statevector(qc):
     return list(_get_statevector_np_array)
 
 def get_probabilities(qc):
-    return np.square([ np.absolute(c) for c in _get_statevector_np_array(qc)])
+    return list(np.square([ np.absolute(c) for c in _get_statevector_np_array(qc)]))
 
 def get_measurement(qc):
     qc.measure([0, 1], [0, 1])
