@@ -56,7 +56,7 @@ def _get_statevector_np_array(qc):
     return execute(qc, Aer.get_backend('statevector_simulator')).result().get_statevector()
 
 def get_statevector(qc):
-    return list(_get_statevector_np_array)
+    return list(_get_statevector_np_array(qc))
 
 def get_probabilities(qc):
     probabilities = np.square([ np.absolute(c) for c in _get_statevector_np_array(qc)])
