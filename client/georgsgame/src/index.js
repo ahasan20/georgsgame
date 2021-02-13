@@ -454,8 +454,9 @@ class Game extends React.Component {
                   <Col></Col>
                   <Col>
                   Turns
-                  <Container className="turn-box">
-                    <Row>Turn {this.props.turn + 1}/10 - {reverseMap[this.props.turn % 2]} ({yourTurn})</Row>
+                  <Container>
+                    <Row className="turn-box">Turn {this.props.turn + 1}/10 - {reverseMap[this.props.turn % 2]} ({yourTurn})</Row>
+                    <Row className="reset-container"><Button className="reset" onClick={()=>{this.resetGame()}}>Reset Game</Button></Row>
                   </Container>
                   </Col>
                 </Row>
@@ -463,7 +464,6 @@ class Game extends React.Component {
 
                 <Canvas draw={draw}/>
                 <GateCardDeck handleCardUse={this.handleCardUse}/>
-                <Button onClick={()=>{this.resetGame()}}></Button>
             </div>
         )
     }

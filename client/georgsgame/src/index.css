@@ -72,3 +72,15 @@ body{
   display:inline-block;
   width:100%;
 }
+
+.reset {
+  margin-top: 10px;
+  font-weight: 100 !important;
+  background-color: #FF4136 !important;
+  border-color: #FF4136 !important;
+  color: white;
+}
+
+.reset-container {
+  float: right;
+}
