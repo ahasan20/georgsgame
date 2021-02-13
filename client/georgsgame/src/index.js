@@ -8,7 +8,9 @@ const gates = {
     'H': { 'name': 'H', 'style': {backgroundColor: '#99b898'} },
     'X': { 'name': 'X', 'style': {backgroundColor: "#feceab"} },
     'Y': { 'name': 'Y', 'style': {backgroundColor: "#ff847c" } },
-    'Z': { 'name': 'Z', 'style': {backgroundColor: "#e84a5f" } }
+    'Z': { 'name': 'Z', 'style': {backgroundColor: "#e84a5f" } },
+    'CX0': { 'name': 'CX0', 'style': {backgroundColor: "#00a6ff" } },
+    'CX1': { 'name': 'CX1', 'style': {backgroundColor: "#00a6ff" } },
 }
 
 
@@ -64,7 +66,7 @@ class Game extends React.Component {
     constructor(props){
       super(props)
       this.state = {
-        gates:[['X','Y','Z','X','X'],['X', 'X', 'Z', 'X', 'H']],
+        gates:[['X','CX0','CX1','X','X'],['X', 'CX0', 'CX1', 'X', 'H']],
         'test_color':null
       }
     }
@@ -79,6 +81,17 @@ class Game extends React.Component {
       ctx.stroke()
     }
 
+    fillRectCenter(ctx, x,y, width, height){
+      ctx.fillRect(x-(width/2), y-(width/2), width, height);
+      ctx.stroke()
+    }
+
+    fillCircle(ctx, x, y, r){
+      ctx.fillStyle = "#00a6ff";
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
     render() {
         let draw = (ctx, frameCount) => {
           ctx.font = "30px Arial";
@@ -91,17 +104,58 @@ class Game extends React.Component {
 
           const box_size = 50
 
+          const controlled_radii = [10, 50]
+
           for(let i=0; i<this.state.gates.length; i++){
             let y = cable_heights[i]
             for(let j=0; j<this.state.gates[0].length; j++){
+
               let x = j*(cable_width/(this.state.gates[0].length-1))
 
               let type = gates[this.state.gates[i][j]];
-              ctx.fillStyle = type["style"].backgroundColor;
-              this.fillRect(ctx, x + box_size/2, y - box_size/2, 50, 50)
 
-              ctx.fillStyle = "#FFF";
-              ctx.fillText(type["name"], x+40, y+10);
+              ctx.strokeStyle = "white";
+              if(!this.state.gates[i][j].includes("C")){
+                ctx.fillStyle = type["style"].backgroundColor;
+                this.fillRect(ctx, x+box_size/2, y-box_size/2, 50, 50)
+                ctx.fillStyle = "#FFF";
+                ctx.fillText(type["name"], x+40, y+10);
+              }
+
+              else{
+
+                ctx.fillStyle = type["style"].backgroundColor;
+
+                let order = null
+                if(!this.state.gates[i][j].includes("0")){
+                  order = [1, 0]
+                }
+                else{
+                  order = [0, 1]
+                }
+
+                  // this.fillRect(ctx, x+box_size/2, y-box_size/2, radii[i], radii[i])
+                if(i==0){
+                  //cable
+                  this.fillRectCenter(ctx, x+box_size, y, 2, cable_heights[1] - cable_heights[0])
+                  //actual rectangle
+                  this.fillRectCenter(ctx, x+box_size, y, controlled_radii[order[i]], controlled_radii[order[i]])
+
+
+                }
+                else{
+                  this.fillRectCenter(ctx, x+box_size , y, controlled_radii[order[i]], controlled_radii[order[i]])
+
+
+                }
+
+                if(order[i]){
+                  ctx.font = "25px Arial";
+                  ctx.fillStyle = "#FFF";
+                  ctx.fillText(type["name"], x+25, y+10);
+                }
+
+              }
             }
           }
 
