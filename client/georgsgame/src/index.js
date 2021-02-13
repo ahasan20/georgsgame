@@ -45,16 +45,17 @@ const gates = {
     'S_dg': { 'name': 'S✝', 'style': {backgroundColor: "#ffcc00" } },
     'S✝': { 'name': 'S✝', 'style': {backgroundColor: "#ffcc00" } },
     'T': { 'name': 'T', 'style': {backgroundColor: "#00d9ff" } },
+    'Ry': { 'name': 'Ry', 'style': {backgroundColor: "#9403fc"} },
     'T_dg': { 'name': 'T✝', 'style': {backgroundColor: "#00d9ff" } },
     'T✝': { 'name': 'T✝', 'style': {backgroundColor: "#00d9ff" } },
     'CX0': { 'name': 'CX0', 'style': {backgroundColor: "#00a6ff" } },
     'CX1': { 'name': 'CX1', 'style': {backgroundColor: "#00a6ff" } },
-    'CY0': { 'name': 'CY0', 'style': {backgroundColor: "#00a6ff" } },
-    'CY1': { 'name': 'CY1', 'style': {backgroundColor: "#00a6ff" } },
-    'CZ0': { 'name': 'CZ0', 'style': {backgroundColor: "#00a6ff" } },
-    'CZ1': { 'name': 'CZ1', 'style': {backgroundColor: "#00a6ff" } },
-    'CH0': { 'name': 'CH0', 'style': {backgroundColor: "#00a6ff" } },
-    'CH1': { 'name': 'CH1', 'style': {backgroundColor: "#00a6ff" } },
+    // 'CY0': { 'name': 'CY0', 'style': {backgroundColor: "#00a6ff" } },
+    // 'CY1': { 'name': 'CY1', 'style': {backgroundColor: "#00a6ff" } },
+    // 'CZ0': { 'name': 'CZ0', 'style': {backgroundColor: "#00a6ff" } },
+    // 'CZ1': { 'name': 'CZ1', 'style': {backgroundColor: "#00a6ff" } },
+    // 'CH0': { 'name': 'CH0', 'style': {backgroundColor: "#00a6ff" } },
+    // 'CH1': { 'name': 'CH1', 'style': {backgroundColor: "#00a6ff" } },
     '_': { 'name': '', 'style': {backgroundColor: 'rgba(52, 52, 52, 0)' } },
 }
 
@@ -72,6 +73,7 @@ const gate_distribution = {
     'T_dg': { 'name': 'T✝', 'style': {backgroundColor: "#00d9ff" } },
     'CX0': { 'name': 'CX0', 'style': {backgroundColor: "#00a6ff" } },
     'CX1': { 'name': 'CX1', 'style': {backgroundColor: "#00a6ff" } },
+    'Ry': { 'name': 'Ry', 'style': {backgroundColor: "#9403fc"} },
     // 'CY0': { 'name': 'CY0', 'style': {backgroundColor: "#00a6ff" } },
     // 'CY1': { 'name': 'CY1', 'style': {backgroundColor: "#00a6ff" } },
     // 'CZ0': { 'name': 'CZ0', 'style': {backgroundColor: "#00a6ff" } },
@@ -257,7 +259,14 @@ class Game extends React.Component {
           console.log(">>>")
 
           if(qubitState[i]=="_"){
-            qubitState[i]=card;
+            if(!card.includes("C")){
+              qubitState[i]=card;
+            }
+            else{
+              for(let j=0;j<2;j++){
+                gameState[j][i]=card
+              }
+            }
             break
           }
         }
@@ -282,6 +291,10 @@ class Game extends React.Component {
         }})
           .then(res => {
             this.setState({probs:res.data})
+
+            console.log("New probs:");
+            console.table(res.data);
+
             const db=firebase.firestore();
             db.collection('games').doc("game").set({turn:this.props.turn + 1, game:newGameState, probs:res.data }).then()
 
@@ -357,18 +370,22 @@ class Game extends React.Component {
 
           const controlled_radii = [10, 50]
 
+          console.log(this.state.gates)
+
           for(let i=0; i<this.state.gates.length; i++){
             let y = cable_heights[i]
             for(let j=0; j<this.state.gates[0].length; j++){
 
               let x = j*(cable_width/(this.state.gates[0].length-1)) - starting_x
               let type = gates[this.state.gates[i][j]];
+              // console.log("type");
+              // console.log(type);
 
               ctx.strokeStyle = "white";
 
 
-              if(!this.state.gates[i][j].includes("C")){
-
+              if(!this.state.gates[i][j].includes("C") && type["style"]){
+                console.log(this.state.gates[i][j]);
                 ctx.fillStyle = type["style"].backgroundColor;
                 this.fillRect(ctx, x+box_size/2, y-box_size/2, box_size, box_size)
                 ctx.fillStyle = "#FFF";
