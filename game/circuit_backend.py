@@ -32,3 +32,11 @@ def get_probabilities(qc):
     for c in statevector:
         p.append(np.absolute(c))
     return p
+
+def measure(qc):
+    qc.measure([0, 1], [0, 1])
+    backend = Aer.get_backend('qasm_simulator')
+    result = execute(qc, backend, shots=1)
+    counts = result.result().get_counts(qc)
+    for k in counts.keys():
+        return k
