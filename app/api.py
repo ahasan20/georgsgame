@@ -14,6 +14,7 @@ def version():
 
 @app.route("/api/get/probabilities")
 def get_probabilities_api():
+    print(request.get_json())
     return json.dumps(get_probabilities(state_to_circuit(request.get_json()['state'])), indent=4, sort_keys=True, default=str)
 
 @app.route("/api/get/measurement")
