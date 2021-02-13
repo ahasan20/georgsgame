@@ -1,27 +1,32 @@
-from qiskit.circuit.library import HGate, XGate, YGate, ZGate, CXGate, CYGate, CZGate, CHGate, SwapGate
+from qiskit.circuit.library import HGate, XGate, YGate, ZGate, CXGate, CYGate, CZGate, CHGate, SwapGate, IGate, SGate, TGate
 from qiskit import QuantumCircuit, Aer, execute, QuantumRegister, ClassicalRegister
 import numpy as np
 
-GATE_DICT = {
+SINGLE_GATE_DICT = {
+    'I' : IGate(),
     'H' : HGate(),
     'X' : XGate(),
     'Y' : YGate(),
     'Z' : ZGate(),
+    'S' : SGate(),
+    'T' : TGate()
+}
+
+CONTROLLED_GATE_DICT = {
     'CX' : CXGate(),
     'CY' : CYGate(),
     'CZ' : CZGate(),
     'CH' : CHGate(),
-    'SW' : SwapGate()
 }
 
 def _state_to_gates(state):
 
     gates = []
     for qtop_gate, qbot_gate in zip(state[0], state[1]):
-        if qtop_gate in ['H', 'X', 'Y', 'Z']:
+        if qtop_gate in SINGLE_GATE_DICT.keys():
             gates.append([qtop_gate, [0]])
             gates.append([qbot_gate, [1]])
-        elif qtop_gate[0] == 'C':
+        elif qtop_gate in CONTROLLED_GATE_DICT.keys():
             gates.append([qtop_gate[:2], [0, 1] if qtop_gate[-1] == '0' else [1, 0] ])
 
     return gates
@@ -33,7 +38,10 @@ def state_to_circuit(state):
 
     gates = _state_to_gates(state)
     for gate in gates:
-        qc.append(GATE_DICT[gate[0]], qargs=gate[1])
+        if gate[0] in SINGLE_GATE_DICT.keys():
+            qc.append(SINGLE_GATE_DICT[gate[0]], qargs=gate[1])
+        else:
+            qc.append(CONTROLLED_GATE_DICT[gate[0]], qargs=gate[1])
     return qc
 
 def get_statevector(qc):
