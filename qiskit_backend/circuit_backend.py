@@ -13,10 +13,14 @@ SINGLE_GATE_DICT = {
 }
 
 CONTROLLED_GATE_DICT = {
-    'CX' : CXGate(),
-    'CY' : CYGate(),
-    'CZ' : CZGate(),
-    'CH' : CHGate(),
+    'CX0' : CXGate(),
+    'CX1' : CXGate(),
+    'CY0' : CYGate(),
+    'CY1' : CYGate(),
+    'CZ0' : CZGate(),
+    'CZ1' : CYGate(),
+    'CH0' : CHGate(),
+    'CH1' : CHGate()
 }
 
 def _state_to_gates(state):
@@ -27,9 +31,7 @@ def _state_to_gates(state):
             gates.append([qtop_gate, [0]])
             gates.append([qbot_gate, [1]])
         elif qtop_gate in CONTROLLED_GATE_DICT.keys():
-            gates.append([qtop_gate[:2], [0, 1] if qtop_gate[-1] == '0' else [1, 0] ])
-
-    print(gates)
+            gates.append([qtop_gate, [0, 1] if qtop_gate[-1] == '0' else [1, 0] ])
 
     return gates
 
@@ -46,11 +48,14 @@ def state_to_circuit(state):
             qc.append(CONTROLLED_GATE_DICT[gate[0]], qargs=gate[1])
     return qc
 
+def _get_statevector_np_array(qc):
+    return execute(qc, Aer.get_backend('statevector_simulator')).result().get_statevector()
+
 def get_statevector(qc):
-    return list(execute(qc, Aer.get_backend('statevector_simulator')).result().get_statevector())
+    return list(_get_statevector_np_array)
 
 def get_probabilities(qc):
-    return np.square([ np.absolute(c) for c in get_statevector(qc)])
+    return np.square([ np.absolute(c) for c in _get_statevector_np_array(qc)])
 
 def get_measurement(qc):
     qc.measure([0, 1], [0, 1])
