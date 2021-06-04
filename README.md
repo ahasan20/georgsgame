@@ -1,5 +1,6 @@
 # **Georg’s Game**: Circuit Showdown!
 https://georgsgame.herokuapp.com/
+https://www.youtube.com/watch?v=j-POICzce88
 
 ## Overview
 **Georg’s Game: Circuit Showdown!** is a player versus player digital turn-based card game. Gameplay consists of one-on-one matches in a best-of-three round system. At the center of each players’ screen is the game board; a circuit rendering initially consisting of two quantum channels (qtop and qbot) and two classical channels. Players can view their gate cards and drag them from the deck onto the circuit. At the end of the game, the quantum channels are measured, determining which player wins. The player who goes first wins if the two-qubit measurement is a constant output (10 or 01), while the player wins if it is a balanced output (00 or 11). The goal of the game is to add gates to manipulate the channels in the most probabilistically favorable way. This project offers a fun way to learn about and gain intuition on the different types of quantum gates and quantum puzzles. It also demonstrates the use of Qiskit in the backend for web applications and games.
